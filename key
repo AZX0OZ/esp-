@@ -1,22 +1,18 @@
 
-if not getgenv then
-    getgenv = function() return _G end
-end
 do
-    local g = getgenv()
-    if g.OBLIVION_DEBUG == nil then
-        g.OBLIVION_DEBUG = true
+    if _G.OBLIVION_DEBUG == nil then
+        _G.OBLIVION_DEBUG = true
     end
     if type(_G.__oblivion_dbg) ~= "function" then
         _G.__oblivion_dbg = function(...)
-            if g.OBLIVION_DEBUG then
+            if _G.OBLIVION_DEBUG then
                 print("[OBLIVION]", ...)
             end
         end
     end
     pcall(function()
         game:GetService("ScriptContext").Error:Connect(function(message, stackTrace)
-            if g.OBLIVION_DEBUG then
+            if _G.OBLIVION_DEBUG then
                 warn("[OBLIVION][ERROR]", message)
                 if stackTrace then
                     warn("[OBLIVION][TRACE]", stackTrace)
@@ -25,9 +21,10 @@ do
         end)
     end)
 end
+
 do
     _G.__oblivion_dbg("BOOT: env setup start")
-    local env = getgenv()
+    local env = _G
     local __raw_isfile = env.isfile or isfile
     local __raw_isfolder = env.isfolder or isfolder
     local __raw_makefolder = env.makefolder or makefolder
@@ -135,16 +132,16 @@ do
         end
     end
 
-    getgenv().isfile = env.isfile
-    getgenv().isfolder = env.isfolder
-    getgenv().makefolder = env.makefolder
-    getgenv().writefile = env.writefile
-    getgenv().readfile = env.readfile
-    getgenv().mouse1click = env.mouse1click
-    getgenv().mouse2click = env.mouse2click
-    getgenv().Drawing = env.Drawing
-    getgenv().queue_on_teleport = env.queue_on_teleport
-    getgenv().setclipboard = env.setclipboard
+    _G.isfile = env.isfile
+    _G.isfolder = env.isfolder
+    _G.makefolder = env.makefolder
+    _G.writefile = env.writefile
+    _G.readfile = env.readfile
+    _G.mouse1click = env.mouse1click
+    _G.mouse2click = env.mouse2click
+    _G.Drawing = env.Drawing
+    _G.queue_on_teleport = env.queue_on_teleport
+    _G.setclipboard = env.setclipboard
     _G.__oblivion_dbg("BOOT: env setup done")
 end
 insert = table.insert
@@ -2352,13 +2349,8 @@ ESP.SetBoxImage = function(image)
         end
     end
 end
-if getgenv then
-    local env = getgenv()
-    if type(env) == "table" then
-        env.SetESPBoxImage = ESP.SetBoxImage
-    end
-end
-local _chamsEnv = getgenv and getgenv()
+_G.SetESPBoxImage = ESP.SetBoxImage
+local _chamsEnv = _G
 if type(_chamsEnv) == "table" then
     if _chamsEnv.CurrentChamsType == nil then
         _chamsEnv.CurrentChamsType = "Default"
@@ -2417,17 +2409,14 @@ local function StopBeastChams()
             g2:Destroy()
         end)
     end
-    local g = getgenv and getgenv()
-    if g then
-        if g.BeastChams_DisablePlayers then
-            pcall(g.BeastChams_DisablePlayers)
-        end
-        if g.BeastChams_Stop then
-            pcall(g.BeastChams_Stop)
-        end
-        if g.Chams_Stop then
-            pcall(g.Chams_Stop)
-        end
+    if _G.BeastChams_DisablePlayers then
+        pcall(_G.BeastChams_DisablePlayers)
+    end
+    if _G.BeastChams_Stop then
+        pcall(_G.BeastChams_Stop)
+    end
+    if _G.Chams_Stop then
+        pcall(_G.Chams_Stop)
     end
 end
 do
@@ -3429,19 +3418,17 @@ do
     end
 end
 local function StartBeastChams(enablePlayers)
-    local g = getgenv and getgenv()
-    if g and g.BeastChams_IsRunning and g.BeastChams_IsRunning() then
+    local g = _G
+    if g.BeastChams_IsRunning and g.BeastChams_IsRunning() then
         if g.BeastChams_Stop then
             pcall(g.BeastChams_Stop)
         end
     end
-    if getgenv then
-        if getgenv().BeastChams_Stop then
-            pcall(getgenv().BeastChams_Stop)
-        end
-        if getgenv().Chams_Stop then
-            pcall(getgenv().Chams_Stop)
-        end
+    if g.BeastChams_Stop then
+        pcall(g.BeastChams_Stop)
+    end
+    if g.Chams_Stop then
+        pcall(g.Chams_Stop)
     end
     local Players = game:GetService("Players")
     local RunService = game:GetService("RunService")
@@ -3805,87 +3792,85 @@ local function StartBeastChams(enablePlayers)
             cleanESP(p)
         end
     end
-    if getgenv then
-        getgenv().BeastChams_IsRunning = function() return true end
-        getgenv().BeastChams_EnablePlayers = EnablePlayers
-        getgenv().BeastChams_DisablePlayers = DisablePlayers
-        getgenv().BeastChams_CoreColor = getgenv().BeastChams_CoreColor or SETTINGS.CoreColor
-        getgenv().BeastChams_OutlineColor = getgenv().BeastChams_OutlineColor or SETTINGS.OutlineColor
-        getgenv().BeastChams_ArmsOutlineColor = getgenv().BeastChams_ArmsOutlineColor or SETTINGS.OutlineColor
-        getgenv().BeastChams_ArmsCoreColor = getgenv().BeastChams_ArmsCoreColor or SETTINGS.CoreColor
-        getgenv().BeastChams_SetArmsColors = function(coreColor, outlineColor)
-            if typeof(coreColor) == "Color3" then
-                getgenv().BeastChams_ArmsCoreColor = coreColor
-            end
-            if typeof(outlineColor) == "Color3" then
-                getgenv().BeastChams_ArmsOutlineColor = outlineColor
-            end
+    _G.BeastChams_IsRunning = function() return true end
+    _G.BeastChams_EnablePlayers = EnablePlayers
+    _G.BeastChams_DisablePlayers = DisablePlayers
+    _G.BeastChams_CoreColor = _G.BeastChams_CoreColor or SETTINGS.CoreColor
+    _G.BeastChams_OutlineColor = _G.BeastChams_OutlineColor or SETTINGS.OutlineColor
+    _G.BeastChams_ArmsOutlineColor = _G.BeastChams_ArmsOutlineColor or SETTINGS.OutlineColor
+    _G.BeastChams_ArmsCoreColor = _G.BeastChams_ArmsCoreColor or SETTINGS.CoreColor
+    _G.BeastChams_SetArmsColors = function(coreColor, outlineColor)
+        if typeof(coreColor) == "Color3" then
+            _G.BeastChams_ArmsCoreColor = coreColor
         end
-        getgenv().BeastChams_SetColors = function(coreColor, outlineColor)
-            if typeof(coreColor) == "Color3" then
-                getgenv().BeastChams_CoreColor = coreColor
-            end
-            if typeof(outlineColor) == "Color3" then
-                getgenv().BeastChams_OutlineColor = outlineColor
-            end
+        if typeof(outlineColor) == "Color3" then
+            _G.BeastChams_ArmsOutlineColor = outlineColor
         end
-        getgenv().BeastChams_Stop = function()
-            RunService:UnbindFromRenderStep(renderStepName)
-            if guiInstance and guiInstance.Parent then
-                guiInstance:Destroy()
-            end
-            for _, data in pairs(espObjects) do
-                if data.Connections then
-                    for _, c in ipairs(data.Connections) do
-                        if c.Connected then
-                            c:Disconnect()
-                        end
+    end
+    _G.BeastChams_SetColors = function(coreColor, outlineColor)
+        if typeof(coreColor) == "Color3" then
+            _G.BeastChams_CoreColor = coreColor
+        end
+        if typeof(outlineColor) == "Color3" then
+            _G.BeastChams_OutlineColor = outlineColor
+        end
+    end
+    _G.BeastChams_Stop = function()
+        RunService:UnbindFromRenderStep(renderStepName)
+        if guiInstance and guiInstance.Parent then
+            guiInstance:Destroy()
+        end
+        for _, data in pairs(espObjects) do
+            if data.Connections then
+                for _, c in ipairs(data.Connections) do
+                    if c.Connected then
+                        c:Disconnect()
                     end
                 end
-                if data.Root then
-                    pcall(function()
-                        data.Root:Destroy()
-                    end)
-                end
             end
-            table_clear(espObjects)
-            for _, c in ipairs(globalConnections) do
-                if c.Connected then
-                    c:Disconnect()
-                end
+            if data.Root then
+                pcall(function()
+                    data.Root:Destroy()
+                end)
             end
-            table_clear(globalConnections)
-            armsModel = nil
-            getgenv().BeastChams_RegisterArms = nil
-            getgenv().BeastChams_UnregisterArms = nil
-            getgenv().BeastChams_IsRunning = nil
-            getgenv().BeastChams_EnablePlayers = nil
-            getgenv().BeastChams_DisablePlayers = nil
-            getgenv().BeastChams_Stop = nil
-            getgenv().Chams_Stop = nil
-            getgenv().Chams_RegisterArms = nil
-            getgenv().Chams_UnregisterArms = nil
         end
-        getgenv().BeastChams_RegisterArms = function(model)
-            if typeof(model) ~= "Instance" or not model:IsA("Model") or not model.Parent then
-                cleanESP(ArmsKey)
-                armsModel = nil
-                return
+        table_clear(espObjects)
+        for _, c in ipairs(globalConnections) do
+            if c.Connected then
+                c:Disconnect()
             end
-            if armsModel == model and espObjects[ArmsKey] then
-                return
-            end
-            armsModel = model
-            createESPForPlayer(ArmsKey, model)
         end
-        getgenv().BeastChams_UnregisterArms = function()
+        table_clear(globalConnections)
+        armsModel = nil
+        _G.BeastChams_RegisterArms = nil
+        _G.BeastChams_UnregisterArms = nil
+        _G.BeastChams_IsRunning = nil
+        _G.BeastChams_EnablePlayers = nil
+        _G.BeastChams_DisablePlayers = nil
+        _G.BeastChams_Stop = nil
+        _G.Chams_Stop = nil
+        _G.Chams_RegisterArms = nil
+        _G.Chams_UnregisterArms = nil
+    end
+    _G.BeastChams_RegisterArms = function(model)
+        if typeof(model) ~= "Instance" or not model:IsA("Model") or not model.Parent then
             cleanESP(ArmsKey)
             armsModel = nil
+            return
         end
-        getgenv().Chams_Stop = getgenv().BeastChams_Stop
-        getgenv().Chams_RegisterArms = getgenv().BeastChams_RegisterArms
-        getgenv().Chams_UnregisterArms = getgenv().BeastChams_UnregisterArms
+        if armsModel == model and espObjects[ArmsKey] then
+            return
+        end
+        armsModel = model
+        createESPForPlayer(ArmsKey, model)
     end
+    _G.BeastChams_UnregisterArms = function()
+        cleanESP(ArmsKey)
+        armsModel = nil
+    end
+    _G.Chams_Stop = _G.BeastChams_Stop
+    _G.Chams_RegisterArms = _G.BeastChams_RegisterArms
+    _G.Chams_UnregisterArms = _G.BeastChams_UnregisterArms
     RunService:BindToRenderStep(renderStepName, CAMERA_PRIORITY, function()
         local cam = Workspace.CurrentCamera
         if not cam then return end
@@ -3971,12 +3956,12 @@ local function StartBeastChams(enablePlayers)
                     local entryMode = entry[4]
                     if entryMode ~= 2 then
                         if inner then
-                            local g = getgenv and getgenv()
-                            inner.Color = (player == ArmsKey and g and g.BeastChams_ArmsCoreColor) or (g and g.BeastChams_CoreColor) or SETTINGS.CoreColor
+                            local g = _G
+                            inner.Color = (player == ArmsKey and g.BeastChams_ArmsCoreColor) or g.BeastChams_CoreColor or SETTINGS.CoreColor
                         end
                         if outer then
-                            local g = getgenv and getgenv()
-                            outer.Color = (player == ArmsKey and g and g.BeastChams_ArmsOutlineColor) or (g and g.BeastChams_OutlineColor) or SETTINGS.OutlineColor
+                            local g = _G
+                            outer.Color = (player == ArmsKey and g.BeastChams_ArmsOutlineColor) or g.BeastChams_OutlineColor or SETTINGS.OutlineColor
                         end
                     end
                     if inner then
@@ -6493,10 +6478,6 @@ ESP._ui.chamsTypeDropdownEl = sections.ESPChams:Dropdown({
             v = "Model"
         end
         CurrentChamsType = v
-        local _chamsEnv = getgenv and getgenv()
-        if type(_chamsEnv) == "table" then
-            _chamsEnv.CurrentChamsType = v
-        end
         if type(_G) == "table" then
             _G.CurrentChamsType = v
         end
@@ -7347,14 +7328,12 @@ ESP._ui.chamsFillColorPickerEl = sections.ESPChams:Colorpicker({
                 highlight.FillColor = color
             end
         end
-        if tostring(CurrentChamsType) == "Opaque Force Field" and getgenv then
-            local g = getgenv()
-            if g and g.BeastChams_SetColors then
+        if tostring(CurrentChamsType) == "Opaque Force Field" then
+            local g = _G
+            if g.BeastChams_SetColors then
                 g.BeastChams_SetColors(color, g.BeastChams_OutlineColor or ESP.Drawing.Chams.OutlineRGB)
             else
-                if g then
-                    g.BeastChams_CoreColor = color
-                end
+                g.BeastChams_CoreColor = color
             end
         end
     end
@@ -7371,14 +7350,12 @@ ESP._ui.chamsOutlineColorPickerEl = sections.ESPChams:Colorpicker({
             end
         end
         local ct = tostring(CurrentChamsType):lower():gsub("%s+", "")
-        if (ct == "opaqueforcefield" or ct == "forcefield") and getgenv then
-            local g = getgenv()
-            if g and g.BeastChams_SetColors then
+        if ct == "opaqueforcefield" or ct == "forcefield" then
+            local g = _G
+            if g.BeastChams_SetColors then
                 g.BeastChams_SetColors(g.BeastChams_CoreColor or ESP.Drawing.Chams.FillRGB, color)
             else
-                if g then
-                    g.BeastChams_OutlineColor = color
-                end
+                g.BeastChams_OutlineColor = color
             end
         end
     end
@@ -8036,8 +8013,8 @@ LootESP._ui._syncLootVisibility = LootESP._ui._syncLootVisibility or function()
 end
 LootESP._ui._syncLootVisibility()
 pcall(function()
-    if getgenv and getgenv().MainDesync_Stop then
-        getgenv().MainDesync_Stop()
+    if type(_G.MainDesync_Stop) == "function" then
+        _G.MainDesync_Stop()
     end
 end)
 DesyncModule = {
@@ -8353,9 +8330,7 @@ local function desyncStop()
     desyncDestroyGhostModel()
 end
 pcall(function()
-    if getgenv then
-        getgenv().MainDesync_Stop = desyncStop
-    end
+    _G.MainDesync_Stop = desyncStop
 end)
 local function desyncStart()
     if DesyncModule._heartbeatConnection then
@@ -8584,12 +8559,12 @@ for _, inst in ipairs(workspace:GetChildren()) do
     end
 end
 pcall(function()
-    if getgenv and getgenv().MainFakeLag_Stop then
-        getgenv().MainFakeLag_Stop()
+    if type(_G.MainFakeLag_Stop) == "function" then
+        _G.MainFakeLag_Stop()
     end
 end)
 do
-    local env = (getgenv and getgenv()) or _G
+    local env = _G
     env.FakeLagSettings = env.FakeLagSettings or {}
     FakeLagModule = env.FakeLagSettings
     if type(FakeLagModule.Delay) ~= "number" then FakeLagModule.Delay = 0.35 end
@@ -9113,10 +9088,8 @@ do
             fakeLagStop()
         end
     end
-    if getgenv then
-        getgenv().MainFakeLag_Stop = fakeLagStop
-        getgenv().FakeLag_SetEnabled = fakeLagSetEnabled
-    end
+    _G.MainFakeLag_Stop = fakeLagStop
+    _G.FakeLag_SetEnabled = fakeLagSetEnabled
     if _G and _G.allvars then
         _G.allvars.toggleFakeLag = fakeLagSetEnabled
     end
@@ -9298,8 +9271,8 @@ ESP._ui.fakeLagEnableToggleEl = fakeLagSection:Toggle({
     Callback = function(value)
         if _G and _G.allvars and type(_G.allvars.toggleFakeLag) == "function" then
             _G.allvars.toggleFakeLag(value)
-        elseif getgenv and type(getgenv().FakeLag_SetEnabled) == "function" then
-            getgenv().FakeLag_SetEnabled(value)
+        elseif type(_G.FakeLag_SetEnabled) == "function" then
+            _G.FakeLag_SetEnabled(value)
         else
             FakeLagModule.Enabled = value and true or false
         end
@@ -12684,8 +12657,8 @@ local function UnloadScript()
     pcall(function()
         if type(desyncStop) == "function" then
             desyncStop()
-        elseif getgenv and type(getgenv().MainDesync_Stop) == "function" then
-            getgenv().MainDesync_Stop()
+        elseif type(_G.MainDesync_Stop) == "function" then
+            _G.MainDesync_Stop()
         elseif DesyncModule then
             DesyncModule.Enabled = false
             if DesyncModule._heartbeatConnection then
@@ -13697,21 +13670,17 @@ local function UpdateArmsVisual(color, transparency)
             end)
         end
         ArmsVisual.Highlight = nil
-        local unregisterGlobal = getgenv and getgenv().BeastChams_UnregisterArms
-        if unregisterGlobal then
-            pcall(unregisterGlobal)
+        if _G.BeastChams_UnregisterArms then
+            pcall(_G.BeastChams_UnregisterArms)
         end
         ArmsVisual.LastBeastRegisterModel = nil
         ArmsVisual.LastBeastRegisterTime = nil
     end
     if CurrentHandChamsType == "opaque force field" or CurrentHandChamsType == "beast" then
-        if getgenv then
-            local hasRegister = getgenv().BeastChams_RegisterArms
-            if not hasRegister then
-                pcall(StartBeastChams, false)
-            end
+        if not _G.BeastChams_RegisterArms then
+            pcall(StartBeastChams, false)
         end
-        local setArmsColors = getgenv and getgenv().BeastChams_SetArmsColors
+        local setArmsColors = _G.BeastChams_SetArmsColors
         if setArmsColors then
             if CurrentHandChamsType == "opaque force field" then
                 local outer = ArmsVisual.OpaqueOuterColor or Color3.fromRGB(0, 0, 0)
@@ -13721,8 +13690,8 @@ local function UpdateArmsVisual(color, transparency)
                 pcall(setArmsColors, Color3.fromRGB(0, 0, 0), color)
             end
         end
-        local register = getgenv and getgenv().BeastChams_RegisterArms
-        local unregister = getgenv and getgenv().BeastChams_UnregisterArms
+        local register = _G.BeastChams_RegisterArms
+        local unregister = _G.BeastChams_UnregisterArms
         if not ArmsVisual.Enabled then
             if unregister then
                 pcall(unregister)
@@ -14168,10 +14137,6 @@ ESP._ui.playerHandMaterialDropdownEl = PlayerHandSection:Dropdown({
         else
             CurrentHandChamsType = "material"
             ArmsVisual.Material = materialMap[value] or Enum.Material.ForceField
-        end
-        local _chamsEnv = getgenv and getgenv()
-        if type(_chamsEnv) == "table" then
-            _chamsEnv.CurrentHandChamsType = CurrentHandChamsType
         end
         if type(_G) == "table" then
             _G.CurrentHandChamsType = CurrentHandChamsType
